@@ -1,0 +1,83 @@
+---
+title: "HW1"
+author: "Nihaal Rahman (nkr2121)"
+due date: "2023-09-23"
+output: github_document
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(tidyverse)
+library(moderndive)
+```
+
+## Problem 1
+
+Let's begin by loading in the data set. 
+
+```{r}
+data("early_january_weather")
+```
+
+This data set has `r nrow(early_january_weather)` observations of `r ncol(early_january_weather)` variables. The variables included in this data set are `r colnames(early_january_weather)`. The mean temperature recorded in early January 2013 was `r round(mean(early_january_weather$temp),2)` degrees.
+
+Let's create a scatterplot of time vs. temperature. 
+```{r}
+ggplot(early_january_weather, aes(x=time_hour, y=temp, color=humid)) + geom_point()
+```
+
+We can see that the temperature steadily increased as the month progressed. Humidity was also low in the beginning of the month, and slowly increased as well. 
+
+Now, I will save the scatter plot as a PNG file. 
+```{r, message = FALSE}
+ggsave('weather_scatter.png')
+```
+
+## Problem 2
+
+Creating the dataframe: 
+
+```{r}
+set.seed(1234)
+
+hw1_df = 
+  tibble(
+    sample = rnorm(n = 10),
+    vec_logical = sample > 0,
+    vec_character = c("A", "B", "C", "A", "B", "C", "A", "B", "C", "A"),
+    vec_factor = factor(vec_character)
+  )
+```
+
+Now attempting to take the `mean` of `sample`, `vec_logical`, `vec_character`, and `vec_factor`: 
+```{r}
+mean(pull(hw1_df, sample))
+
+mean(pull(hw1_df, vec_logical))
+
+mean(pull(hw1_df, vec_character))
+
+mean(pull(hw1_df, vec_factor))
+```
+
+As evident by the error messages we get for the last 2, you can take the mean of numeric or logical variables, but none of the other kinds of variables. 
+
+Now, I will try applying the `as.numeric()` function to the `vec_logical`, `vec_character`, and `vec_factor` variables: 
+
+```{r, results = FALSE, warning = FALSE}
+as.numeric(pull(hw1_df, vec_logical))
+
+as.numeric(pull(hw1_df, vec_character))
+
+as.numeric(pull(hw1_df, vec_factor))
+```
+
+And then, will subsequently try taking the `mean` of these `as.numeric` conversions:
+
+```{r, results = FALSE, warning = FALSE}
+mean(as.numeric(pull(hw1_df, vec_logical)))
+
+mean(as.numeric(pull(hw1_df, vec_character)))
+
+mean(as.numeric(pull(hw1_df, vec_factor)))
+```
+The logical vector is able to be converted to a numeric variable by assigning 0's and 1's based on TRUE or FALSE status. The character vector is not able to be converted to a numeric variable, because the characters do not correspond to any numbers that R is able to read. However, the factor variable is able to be converted to a numeric variable, because the factors have corresponding levels, and those levels (3 factor levels in this case) can those levels are what R uses to convert the variable into a numeric variable. 
